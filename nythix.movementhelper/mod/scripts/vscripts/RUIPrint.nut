@@ -7,7 +7,7 @@ struct {
 } ruiPrinter
 
 
-void function RuiPrint( string text, int line = 0, float size = 30.0, vector color = <1,1,1> )
+void function RuiPrint( string text, int line = 0, float delay = 0.5, vector color = <1,1,1>, float size = 30.0)
 {
     while( ruiPrinter.ruis.len() <= line )
         ruiPrinter.ruis.append( null )
@@ -30,7 +30,7 @@ void function RuiPrint( string text, int line = 0, float size = 30.0, vector col
     RuiSetString( ruiPrinter.ruis[line], "msgText", text )
 
     // destroy after 0.5 seconds
-    thread DestroyRuiAfterDelay( line, 0.5 )
+    thread DestroyRuiAfterDelay( line, delay )
 }
 
 

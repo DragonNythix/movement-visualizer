@@ -8,12 +8,15 @@ const float SUCCESS_WINDOW = 0.008
 
 int wallrunFrameTime = -1
 
+global int lurchInputCount = 0
+
 
 void function movementhelper_Init()
 {    
     AddCallback_OnJump(OnJump)
     AddCallback_OnCrouch(OnCrouch)
     AddCallback_OnWallrunStart(OnWallrunStart)
+    AddCallback_OnJump(Lurchtimer)
 }
 
 
@@ -44,7 +47,7 @@ void function CheckInputTiming()
     if (wallrunFrameTime > 5) 
     {
         //printt("failure " + wallrunFrameTime + "f")
-        RuiPrint("failure - " + wallrunFrameTime + "f", 0)
+        RuiPrint("failure - " + wallrunFrameTime + "f", 0, 0.5, <1,0,0>)
         return
     }
 
@@ -53,14 +56,39 @@ void function CheckInputTiming()
     if (delta <= SUCCESS_WINDOW)
     {
         //printt("success CK")
-        RuiPrint("success CK - " + wallrunFrameTime + "f", 0)
+        RuiPrint("success CK - " + wallrunFrameTime + "f", 0, 0.5, <0,1,0>)
         return
     }
     else
     {
         //printt("success WK")
-        RuiPrint("success WK - " + wallrunFrameTime + "f", 0)
+        RuiPrint("success WK - " + wallrunFrameTime + "f", 0, 0.5, <0,1,0>)
     }
+}
+
+void function Lurchtimer(){
+    thread Lurchthread()
+}
+void function Lurchthread(){
+    RuiPrint("Lurch active", 2, 0.5, <0,0,1>)
+    AddCallback_OnForwardInput( CountTabs )
+    AddCallback_OnBackInput( CountTabs )
+    AddCallback_OnLeftInput( CountTabs )
+    AddCallback_OnLeftInput( CountTabs )
+    AddCallback_OnRightInput( CountTabs )
+    wait 0.5 //the lurch time
+    RemoveCallback_OnForwardInput( CountTabs )
+    RemoveCallback_OnBackInput( CountTabs )
+    RemoveCallback_OnLeftInput( CountTabs )
+    RemoveCallback_OnRightInput( CountTabs )
+    RuiPrint(lurchInputCount + " Lurches", 3, 0.5, <0,1,1>)
+    lurchInputCount = 0
+}
+
+void function CountTabs(){
+    RuiPrint("Lurch!", 3, 0.05, <0,1,1>, 20.0)
+    lurchInputCount++
+    
 }
 
 
@@ -69,7 +97,7 @@ void function OnWallrunStart()
     entity player = GetLocalClientPlayer()
 
     wallrunFrameTime = 0
-    RuiPrint("WR START", 1)
+    RuiPrint("WR START", 1, 0.2, <0,0,1>)
     thread TrackWallrunFrames(player)
 }
 

@@ -5,16 +5,27 @@
 global function customcallbacks_Init
 
 global function AddCallback_OnForwardInput
+global function RemoveCallback_OnForwardInput
 global function AddCallback_OnBackInput
+global function RemoveCallback_OnBackInput
 global function AddCallback_OnLeftInput
+global function RemoveCallback_OnLeftInput
 global function AddCallback_OnRightInput
+global function RemoveCallback_OnRightInput
 global function AddCallback_OnJumpInput
+global function RemoveCallback_OnJumpInput
 global function AddCallback_OnJump
+global function RemoveCallback_OnJump
 global function AddCallback_OnCrouchInput
+global function RemoveCallback_OnCrouchInput
 global function AddCallback_OnCrouch 
+global function RemoveCallback_OnCrouch 
 global function AddCallback_OnSlide 
+global function RemoveCallback_OnSlide 
 global function AddCallback_OnWallrunStart
+global function RemoveCallback_OnWallrunStart
 global function AddCallback_OnWallrunStop
+global function RemoveCallback_OnWallrunStop
 
 
 //---------------------------------------------------------
@@ -77,12 +88,12 @@ void function registerCallbacks()
             RegisterButtonPressedCallback( key, Internal_OnBackInput )
             printt("Registered key " + key + " as Back bind") //DEBUG
         }
-        else if (bind == "+left")
+        else if (bind == "+moveleft")
         {
             RegisterButtonPressedCallback( key, Internal_OnLeftInput )
             printt("Registered key " + key + " as Left bind") //DEBUG
         }
-        else if (bind == "+right")
+        else if (bind == "+moveright")
         {
             RegisterButtonPressedCallback( key, Internal_OnRightInput )
             printt("Registered key " + key + " as Right bind") //DEBUG
@@ -122,7 +133,7 @@ void function registerCallbacks()
 //---------------------------------------------------------
 
 void function AddCallback_OnForwardInput( void functionref() callback )
-{
+{   
     Assert( !file.onForwardInputCallbacks.contains( callback ), "Already added " + string( callback ) )
     file.onForwardInputCallbacks.append( callback )
 }
@@ -330,7 +341,7 @@ void function RemoveCallback_OnWallrunStop( void functionref() callback )
 //---------------------------------------------------------
 
 void function Internal_OnForwardInput( var button )
-{
+{   
     foreach ( callback in file.onForwardInputCallbacks )
         callback()
 }
