@@ -1,50 +1,84 @@
-untyped 
 global function movementhelper_Init
 
 float lastSpaceTime = -1.0
 float lastAltTime   = -1.0
-float inputWindow   = 0.2 // seconds allowed between inputs
-float successWindow = 0.008 // 8 ms
+
+const float INPUT_WINDOW   = 0.2
+const float SUCCESS_WINDOW = 0.008
+
+int wallrunFrameTime = -1
+
 
 void function movementhelper_Init()
-{
-    RegisterButtonPressedCallback(KEY_SPACE, OnSpace)
-    RegisterButtonPressedCallback(KEY_LALT, OnAlt)
-    printt( "movementhelper loaded" )
+{    
+    AddCallback_OnJump(OnJump)
+    AddCallback_OnCrouch(OnCrouch)
+    AddCallback_OnWallrunStart(OnWallrunStart)
 }
 
-void function OnSpace(var button)
+
+void function OnJump()
 {
     lastSpaceTime = Time()
+    CheckInputTiming()
+}
 
-    // check if ALT was pressed recently
-    if (lastAltTime >= 0)
+
+void function OnCrouch()
+{
+    lastAltTime = Time()
+    CheckInputTiming()
+}
+
+
+
+void function CheckInputTiming()
+{
+    if (wallrunFrameTime == -1)
+        return
+
+    float newestTime = max(lastSpaceTime, lastAltTime)
+
+    if (wallrunFrameTime > 5)
     {
-        float delta = lastSpaceTime - lastAltTime
-        if (delta <= inputWindow)
-        {
-            printt("Time between inputs = " + delta + " seconds")
-            if(delta <= successWindow) {
-                printt("success")
-            }
-        }
+        //printt("failure " + wallrunFrameTime + "f")
+        RuiPrint("failure -" + wallrunFrameTime + "f", 0)
+        return
+    }
+
+    float delta = fabs(lastSpaceTime - lastAltTime)
+
+    if (delta <= SUCCESS_WINDOW)
+    {
+        //printt("success CK")
+        RuiPrint("success CK - " + wallrunFrameTime + "f", 0)
+        return
+    }
+    else
+    {
+        //printt("success WK")
+        RuiPrint("success WK - " + wallrunFrameTime + "f", 0)
     }
 }
 
-void function OnAlt(var button)
-{
-    lastAltTime = Time()
 
-    // check if SPACE was pressed recently
-    if (lastSpaceTime >= 0)
+void function OnWallrunStart()
+{
+    entity player = GetLocalClientPlayer()
+
+    wallrunFrameTime = 0
+
+    thread TrackWallrunFrames(player)
+}
+
+
+void function TrackWallrunFrames(entity player)
+{
+    while (player.IsWallRunning())
     {
-        float delta = lastAltTime - lastSpaceTime
-        if (delta <= inputWindow)
-        {
-            printt("Time between inputs = " + delta + " seconds")
-            if(delta <= successWindow) {
-                printt("success")
-            }
-        }
+        wallrunFrameTime++
+        WaitFrame() // prevents thread lock
     }
+
+    wallrunFrameTime = -1
 }

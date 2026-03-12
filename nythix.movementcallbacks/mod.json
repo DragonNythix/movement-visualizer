@@ -1,0 +1,17 @@
+{
+   "Name": "Nythix.movementcallbacks",
+   "Description": "mod that adds custom callbacks for stuff related to movement, such as wallrun start or actions such as jump input",
+   "Version": "0.1.0",
+   "LoadPriority": 0,
+
+   "Scripts": [
+    {
+        "Path": "customcallbacks.nut",
+        "RunOn": "CLIENT && !LOBBY",
+        "ClientCallback": {
+            "After": "customcallbacks_Init"
+        }
+    }
+    ]
+
+}
