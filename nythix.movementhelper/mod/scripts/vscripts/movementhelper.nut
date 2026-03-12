@@ -36,13 +36,15 @@ void function CheckInputTiming()
 {
     if (wallrunFrameTime == -1)
         return
+    if (wallrunFrameTime > 50 ) //if we take 50 frames it can be assumed it wasnt an attempt in the first place
+        return
 
     float newestTime = max(lastSpaceTime, lastAltTime)
 
-    if (wallrunFrameTime > 5)
+    if (wallrunFrameTime > 5) 
     {
         //printt("failure " + wallrunFrameTime + "f")
-        RuiPrint("failure -" + wallrunFrameTime + "f", 0)
+        RuiPrint("failure - " + wallrunFrameTime + "f", 0)
         return
     }
 
@@ -67,7 +69,7 @@ void function OnWallrunStart()
     entity player = GetLocalClientPlayer()
 
     wallrunFrameTime = 0
-
+    RuiPrint("WR START", 1)
     thread TrackWallrunFrames(player)
 }
 
