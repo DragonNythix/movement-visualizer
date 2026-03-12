@@ -5,6 +5,7 @@ float lastAltTime   = -1.0
 
 const float INPUT_WINDOW   = 0.2
 const float SUCCESS_WINDOW = 0.008
+const frameRate = 0
 
 int wallrunFrameTime = -1
 
@@ -17,6 +18,7 @@ void function movementhelper_Init()
     AddCallback_OnCrouch(OnCrouch)
     AddCallback_OnWallrunStart(OnWallrunStart)
     AddCallback_OnJump(Lurchtimer)
+    thread mesureframe()
 }
 
 
@@ -39,7 +41,7 @@ void function CheckInputTiming()
 {
     if (wallrunFrameTime == -1)
         return
-    if (wallrunFrameTime > 50 ) //if we take 50 frames it can be assumed it wasnt an attempt in the first place
+    if (wallrunFrameTime > 50 ) //Slightly half then half a second, haven't found a way to make this fps dependent. if you know one *please* let me know
         return
 
     float newestTime = max(lastSpaceTime, lastAltTime)
@@ -86,7 +88,6 @@ void function Lurchthread(){
 }
 
 void function CountTabs(){
-    RuiPrint("Lurch!", 3, 0.05, <0,1,1>, 20.0)
     lurchInputCount++
     
 }
@@ -111,4 +112,13 @@ void function TrackWallrunFrames(entity player)
     }
 
     wallrunFrameTime = -1
+}
+
+void function mesureframe(){
+    float startime = Time()
+    while(Time() < (startime + 1.0)){
+        frameRate++
+        WaitFrame()
+    }
+    printt(frameRate)
 }

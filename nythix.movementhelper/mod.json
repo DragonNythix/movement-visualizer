@@ -1,7 +1,7 @@
 {
    "Name": "Nythix.movementhelper",
    "Description": "mod that adds a hud elemet to give feedback on movement tech",
-   "Version": "0.2.1",
+   "Version": "0.3.0",
    "LoadPriority": 1,
 
    "Scripts": [
