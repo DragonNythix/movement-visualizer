@@ -1,27 +1,23 @@
-# Titanfall 2 mod to help visualise movement by providing an in game hud element that displays performed tech and accuracy (if applicable)
-since this is meant as an helper for doing the movement and not to showcase it, it only includes a very limited amount of tech, mostly stuff with tight input windows. there are plans to also do stuff for stafe angles, but since this is harder it will be worked on when the rest is done (or probably never). same with frag boosting stuff.
+# Titanfall 2 Movement Visualizer
 
-# this is still in very early development, dont expect anything pretty or bug free!
+A mod that helps visualize movement in Titanfall 2 by displaying an in-game HUD showing executed techniques and accuracy metrics.
 
-## supported and planned tech:
+This tool is designed to aid movement practice rather than showcase polished gameplay. It currently focuses on techniques with tight input windows. Future updates may include strafe angle visualization and frag boost tracking, though these features are lower priority.
 
-planned:
+**⚠️ Early Development**: This mod is still in active development. Expect incomplete features and potential bugs.
 
-air strafe; show speedloss/time on floor
+## Supported and Planned Features
 
-tab strafe; time window and amount of clicks
-fizzy strafe; same as tab strafe
+### Planned
+- **Air Strafe**: Speed loss and floor time indicators
+- **Tab Strafe**: Time window and click count feedback
+- **Fizzy Strafe**: Click count and timing feedback
+- **Superglide**: Time window feedback
+- **Wall Kick**: Time spent on wall feedback *(in progress)*
+- **Crouch Kick**: Input timing analysis *(partially complete)*
+- **Forced End Boost**: Feedback and validation
+- **Crouched Forced End Boost**: Validation mechanics
+- **Bump Launch**: Speed and CPS metrics
 
-superglide, time window feedback
-
-Wall kick feedback, time spend on wall Done!
-Crouch kick, time inputs are apart partly done!
-
-Forced End boost
-
-Crouched Forced end boost
-
-bump launch, speed and cps
-
-titan mechanics:
-TBD
+### Titan Mechanics
+- *To be determined*
