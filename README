@@ -1,5 +1,8 @@
 # Titanfall 2 mod to help visualise movement by providing an in game hud element that displays performed tech and accuracy (if applicable)
 since this is meant as an helper for doing the movement and not to showcase it, it only includes a very limited amount of tech, mostly stuff with tight input windows. there are plans to also do stuff for stafe angles, but since this is harder it will be worked on when the rest is done (or probably never). same with frag boosting stuff.
+
+# this is still in very early development, dont expect anything pretty or bug free!
+
 ## supported and planned tech:
 
 planned:
@@ -11,8 +14,8 @@ fizzy strafe; same as tab strafe
 
 superglide, time window feedback
 
-Wall kick feedback, time spend on wall
-Crouch kick, time inputs are apart 
+Wall kick feedback, time spend on wall Done!
+Crouch kick, time inputs are apart partly done!
 
 Forced End boost
 
