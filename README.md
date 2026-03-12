@@ -19,5 +19,7 @@ This tool is designed to aid movement practice rather than showcase polished gam
 - **Crouched Forced End Boost**: Validation mechanics
 - **Bump Launch**: Speed and CPS metrics
 
+- **Summary with consistency analysis**
+
 ### Titan Mechanics
 - *To be determined*

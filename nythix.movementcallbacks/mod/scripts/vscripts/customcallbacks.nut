@@ -359,7 +359,7 @@ void function Internal_OnJumpInput( var button )
         callback()
 }
 
-void function Internal_OnJump( var button )
+void function Internal_OnJump( var button ) // it is planned to also add input less detection that is togglable with settings/convars but thats low prio
 {
     if ( GetLocalClientPlayer().IsOnGround() )
         return
