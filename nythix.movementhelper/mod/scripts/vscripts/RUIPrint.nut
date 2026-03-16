@@ -1,46 +1,76 @@
-global function RuiPrint
+untyped 
+global function RuiPrint_Init
+global function RuiPrintTech
+global function RuiPrintInfo
 
-struct {
-    array<var> ruis = []
-    vector origin = <0.06, 0.39, 0.0>
-    float spacing = 0.04
-} ruiPrinter
+//---------------------------------------------------------
+// storage
+//---------------------------------------------------------
 
+var TouchingSurfaceRUI
+var CanLurchRUI
 
-void function RuiPrint( string text, int line = 0, float delay = 0.5, vector color = <1,1,1>, float size = 30.0)
+//---------------------------------------------------------
+// INIT
+//---------------------------------------------------------
+
+void function RuiPrint_Init()
 {
-    while( ruiPrinter.ruis.len() <= line )
-        ruiPrinter.ruis.append( null )
+    createRuis()
 
-    if( ruiPrinter.ruis[line] == null )
-    {
-        var rui = RuiCreate( $"ui/cockpit_console_text_top_right.rpak", clGlobal.topoFullScreen, RUI_DRAW_HUD, 0 )
+}
 
-        RuiSetFloat( rui, "msgFontSize", size )
-        RuiSetFloat( rui, "msgAlpha", 1.0 )
-        RuiSetFloat( rui, "thicken", 0.0 )
-        RuiSetFloat3( rui, "msgColor", color )
+void function readConVars()
+{
+    //wont be used for ahile, but the ruis should be configurable
+    return
+}
 
-        vector pos = < ruiPrinter.origin.x+0.9, ruiPrinter.origin.y + (ruiPrinter.spacing * line), 0 >
-        RuiSetFloat2( rui, "msgPos", pos )
+void function createRuis()
+{
+    TouchingSurfaceRUI = RuiCreate( $"ui/cockpit_console_text_top_right.rpak", clGlobal.topoFullScreen, RUI_DRAW_HUD, 0 )
+    RuiSetFloat( TouchingSurfaceRUI, "msgFontSize", 20.0 )
+    RuiSetFloat( TouchingSurfaceRUI, "msgAlpha", 1.0 )
+    RuiSetFloat( TouchingSurfaceRUI, "thicken", 0.0 )
+    RuiSetFloat2( TouchingSurfaceRUI, "msgPos", <0.43, 0.97, 0> )
+    RuiSetFloat3( TouchingSurfaceRUI, "msgColor", <0.2, 0.2, 0.6> )
+    RuiSetString( TouchingSurfaceRUI, "msgText", "Grounded" )
 
-        ruiPrinter.ruis[line] = rui
-    }
-
-    RuiSetString( ruiPrinter.ruis[line], "msgText", text )
-
-    // destroy after 0.5 seconds
-    thread DestroyRuiAfterDelay( line, delay )
+    CanLurchRUI = RuiCreate( $"ui/cockpit_console_text_top_right.rpak", clGlobal.topoFullScreen, RUI_DRAW_HUD, 0 )
+    RuiSetFloat( CanLurchRUI, "msgFontSize", 20.0 )
+    RuiSetFloat( CanLurchRUI, "msgAlpha", 1.0 )
+    RuiSetFloat( CanLurchRUI, "thicken", 0.0 )
+    RuiSetFloat2( CanLurchRUI, "msgPos", <0.58, 0.97, 0> )
+    RuiSetFloat3( CanLurchRUI, "msgColor", <0.2, 0.2, 0.6> )
+    RuiSetString( CanLurchRUI, "msgText", "Lurch" )
 }
 
 
-void function DestroyRuiAfterDelay( int line, float delay )
-{
-    wait delay
+//---------------------------------------------------------
+// UPDATE
+//---------------------------------------------------------
 
-    if( line < ruiPrinter.ruis.len() && ruiPrinter.ruis[line] != null )
+void function RuiPrintTech( string name, string info, int infoval, float speed )
+{
+
+}
+
+void function RuiPrintInfo( string name, bool show )
+{
+    //update the status thingy on the bottom of the screen
+    if( name == "lurch" )
     {
-        RuiDestroy( ruiPrinter.ruis[line] )
-        ruiPrinter.ruis[line] = null
+        RuiSetString( CanLurchRUI, "msgText", show ? "Lurch" : "" )
+    }
+    else if( name == "grounded" )
+    {
+        RuiSetString( TouchingSurfaceRUI, "msgText", show ? "Grounded" : "" )
     }
 }
+
+
+//---------------------------------------------------------
+// UTILITY
+//---------------------------------------------------------
+
+

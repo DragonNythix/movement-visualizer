@@ -63,6 +63,8 @@ void function customcallbacks_Init()
 {
     registerCallbacks()
     thread WallrunWatcher()
+
+    //TODO: add titan embark/disembark callbacks, add surfaceTouch callbacks
 }
 
 

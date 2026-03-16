@@ -4,7 +4,8 @@
    "Version": "0.3.0",
    "LoadPriority": 1,
 
-   "Scripts": [
+   "Scripts":
+   [
     {
         "Path": "movementhelper.nut",
         "RunOn": "CLIENT && !LOBBY",
@@ -14,8 +15,15 @@
     },
     {
          "Path": "RUIPrint.nut",
-         "RunOn": "CLIENT && !LOBBY"
+         "RunOn": "CLIENT && !LOBBY",
+        "ClientCallback": {
+            "After": "RuiPrint_Init"
+        }
     }      
-    ]
+    ],
+    "Dependencies":
+    {
+        "HAS_uCKF": "FromWau.CrouchKickFix"
+    }
 
 }
