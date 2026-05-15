@@ -18,14 +18,16 @@ global function AddCallback_OnJump
 global function RemoveCallback_OnJump
 global function AddCallback_OnCrouchInput
 global function RemoveCallback_OnCrouchInput
-global function AddCallback_OnCrouch 
-global function RemoveCallback_OnCrouch 
-global function AddCallback_OnSlide 
-global function RemoveCallback_OnSlide 
+global function AddCallback_OnCrouch
+global function RemoveCallback_OnCrouch
+global function AddCallback_OnSlide
+global function RemoveCallback_OnSlide
 global function AddCallback_OnWallrunStart
 global function RemoveCallback_OnWallrunStart
 global function AddCallback_OnWallrunStop
 global function RemoveCallback_OnWallrunStop
+
+global function GetPlayerVelocityAsFloat
 
 
 //---------------------------------------------------------
@@ -135,7 +137,7 @@ void function registerCallbacks()
 //---------------------------------------------------------
 
 void function AddCallback_OnForwardInput( void functionref() callback )
-{   
+{
     Assert( !file.onForwardInputCallbacks.contains( callback ), "Already added " + string( callback ) )
     file.onForwardInputCallbacks.append( callback )
 }
@@ -343,7 +345,7 @@ void function RemoveCallback_OnWallrunStop( void functionref() callback )
 //---------------------------------------------------------
 
 void function Internal_OnForwardInput( var button )
-{   
+{
     foreach ( callback in file.onForwardInputCallbacks )
         callback()
 }
@@ -387,7 +389,7 @@ void function Internal_OnCrouchInput( var button )
 }
 
 void function Internal_OnCrouch( var button )
-{   
+{
     if( GetLocalClientPlayer().IsCrouched() )
         return
     foreach ( callback in file.onCrouchCallbacks )
@@ -395,13 +397,13 @@ void function Internal_OnCrouch( var button )
 }
 
 void function Internal_OnSlide( var button )
-{   
+{
     entity player = GetLocalClientPlayer()
 
     if ( !player.IsOnGround() && player.IsWallRunning() && ( GetPlayerVelocityAsFloat() < 16 ) )
         return
-    
-    foreach ( callback in file.onCrouchInputCallbacks )
+
+    foreach ( callback in file.onSlideCallbacks )
         callback()
 }
 
@@ -439,6 +441,8 @@ void function WallrunWatcher()
         WaitFrame()
     }
 }
+
+
 
 
 //---------------------------------------------------------

@@ -1,40 +1,73 @@
 global function movementhelper_Init
 
-float lastSpaceTime = -1.0
-float lastAltTime   = -1.0
-
+float lastSpaceTime  = -1.0
+float lastAltTime    = -1.0
 const float INPUT_WINDOW   = 0.2
 const float SUCCESS_WINDOW = 0.008
-int frameRate = 0
-
-int wallrunFrameTime = -1
-
-global int lurchInputCount = 0
-
+int   frameRate        = 0
+int   wallrunFrameTime = -1
+float speedDiff        = 0.0
+float WRspeed = 0.0
 
 void function movementhelper_Init()
-{    
+{
     #if HAS_uCKF
-        // put the ck stuff init in here or somthing
     #else
-        //debugPrint( "Missing dependency: FromWau.CrouchKickFix" )
-        //make a pop up informing players they should install it
     #endif
-    AddCallback_OnJump(OnJump)
-    AddCallback_OnCrouch(OnCrouch)
-    AddCallback_OnWallrunStart(OnWallrunStart)
-    AddCallback_OnJump(Lurchtimer)
-    thread mesureframe()
 
+    AddCallback_OnJump( OnJump )
+    AddCallback_OnCrouch( OnCrouch )
+    AddCallback_OnWallrunStart( OnWallrunStart )
+
+    thread measureFrame()
+    thread HudUpdateLoop()
 }
 
+//---------------------------------------------------------
+// HUD UPDATE
+//---------------------------------------------------------
+void function HudUpdateLoop()
+{
+    entity player    = GetLocalClientPlayer()
+    bool wasGrounded = false
+    bool couldLurch  = false
 
+    while ( true )
+    {
+        if ( player != null )
+        {
+            bool grounded = player.IsOnGround()
+            bool canLurch = ( Time() - 0.4 ) < lastSpaceTime
+
+            if ( grounded != wasGrounded )
+            {
+                RuiPrintInfo( "grounded", grounded )
+                wasGrounded = grounded
+            }
+
+            if ( canLurch != couldLurch )
+            {
+                RuiPrintInfo( "canlurch", canLurch )
+                couldLurch = canLurch
+            }
+        }
+        else
+        {
+            player = GetLocalClientPlayer()
+        }
+
+        WaitFrame()
+    }
+}
+
+//---------------------------------------------------------
+// WALLJUMP-TECH
+//---------------------------------------------------------
 void function OnJump()
 {
     lastSpaceTime = Time()
     CheckInputTiming()
 }
-
 
 void function OnCrouch()
 {
@@ -42,80 +75,55 @@ void function OnCrouch()
     CheckInputTiming()
 }
 
-
-
 void function CheckInputTiming()
 {
-    if (wallrunFrameTime == -1)
-        return
-    if (wallrunFrameTime > 50 ) //Slightly less then half a second, haven't found a way to make this fps dependent. if you know one *please* let me know
+    if ( wallrunFrameTime == -1 )
         return
 
-    float newestTime = max(lastSpaceTime, lastAltTime)
+    float delta = fabs( lastSpaceTime - lastAltTime )
 
-    if (wallrunFrameTime > 5) 
+    if ( delta <= SUCCESS_WINDOW )
     {
-        //printt("failure " + wallrunFrameTime + "f")
-        return
+        if ( wallrunFrameTime < 6 )
+            RuiPrintTech( "CK",   "Walltime", wallrunFrameTime, GetPlayerVelocityAsFloat() - WRspeed )
+        else if ( wallrunFrameTime < 15)
+            RuiPrintTech( "cFEB", "Waltime", wallrunFrameTime, GetPlayerVelocityAsFloat() - WRspeed )
+        else
+            RuiPrintTech( "cFEB", "0", -1, GetPlayerVelocityAsFloat() - WRspeed )
     }
-
-    float delta = fabs(lastSpaceTime - lastAltTime)
-
-    if (delta <= SUCCESS_WINDOW)
+    else if ( wallrunFrameTime < 6 )
     {
-        //printt("success CK")
-        return
-    }
-    else
-    {
-        //printt("success WK")
+        RuiPrintTech( "WK", "Walltime", wallrunFrameTime, GetPlayerVelocityAsFloat() - WRspeed )
     }
 }
-
-void function Lurchtimer(){
-    thread Lurchthread()
-}
-void function Lurchthread(){
-    AddCallback_OnForwardInput( CountTabs )
-    AddCallback_OnBackInput( CountTabs )
-    AddCallback_OnLeftInput( CountTabs )
-    AddCallback_OnRightInput( CountTabs )
-    wait 0.5 //the lurch time
-    RemoveCallback_OnForwardInput( CountTabs )
-    RemoveCallback_OnBackInput( CountTabs )
-    RemoveCallback_OnLeftInput( CountTabs )
-    RemoveCallback_OnRightInput( CountTabs )
-    lurchInputCount = 0
-}
-
-void function CountTabs(){
-    lurchInputCount++
-    
-}
-
 
 void function OnWallrunStart()
 {
-    entity player = GetLocalClientPlayer()
-
+    entity player    = GetLocalClientPlayer()
     wallrunFrameTime = 0
-    thread TrackWallrunFrames(player)
+    WRspeed = GetPlayerVelocityAsFloat()
+    thread TrackWallrunFrames( player )
 }
 
-
-void function TrackWallrunFrames(entity player)
+void function TrackWallrunFrames( entity player )
 {
-    while (player.IsWallRunning())
+    while ( player.IsWallRunning() )
     {
         wallrunFrameTime++
-        WaitFrame() // prevents thread lock
+        WaitFrame()
     }
-
     wallrunFrameTime = -1
 }
 
-void function mesureframe(){
-    //it does a lot but working isnt one of them
-    frameRate = int(1.0 / (FrameTime() / 1000.0))
-    printt("framerate: " + frameRate)
+//---------------------------------------------------------
+// UTILITY
+//---------------------------------------------------------
+void function measureFrame()
+{
+    while ( true )
+    {
+        if ( FrameTime() > 0.0 )
+            frameRate = int( 1.0 / FrameTime() )
+        WaitFrame()
+    }
 }
