@@ -89,7 +89,7 @@ void function CheckInputTiming()
         else if ( wallrunFrameTime < 15)
             RuiPrintTech( "cFEB", "Waltime", wallrunFrameTime, GetPlayerVelocityAsFloat() - WRspeed )
         else
-            RuiPrintTech( "cFEB", "0", -1, GetPlayerVelocityAsFloat() - WRspeed )
+            RuiPrintTech( "cFEB", "", -1, GetPlayerVelocityAsFloat() - WRspeed )
     }
     else if ( wallrunFrameTime < 6 )
     {
